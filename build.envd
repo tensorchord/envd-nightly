@@ -17,4 +17,4 @@ def gpu_build():
     install.python_packages(name=[
         "torch --extra-index-url https://download.pytorch.org/whl/cu116",
         "transformers",
-    ]
+    ])
