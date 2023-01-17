@@ -55,9 +55,9 @@ def render(data: pd.DataFrame):
 def combine(record: List[float], path: str) -> pd.DataFrame:
     old = pd.DataFrame(columns=NAMES)
     if os.path.isfile(path):
-        old = pd.read_parquet(path)
+        old = pd.read_csv(path)
     data = pd.concat([old, pd.DataFrame([record], columns=NAMES)])
-    data.to_parquet(path)
+    data.to_csv(path)
     return data
 
 
