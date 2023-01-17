@@ -16,7 +16,7 @@ COMMANDS: Dict[str, List[str]] = {
 NAMES = list(COMMANDS.keys())
 
 
-parser = argparse.ArgumentParser(description='Process some integers.')
+parser = argparse.ArgumentParser(description="Process some integers.")
 parser.add_argument("--path", required=True, help="path for the saved data file")
 
 
@@ -35,6 +35,12 @@ def record(cmd: List[str]) -> float:
         print("ERROR: ", cmd)
         return float("inf")
 
+    # GitHub Action has limited disk space
+    subprocess.run(
+        "docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)",
+        check=True,
+        shell=True,
+    )
     return perf_counter() - t0
 
 
