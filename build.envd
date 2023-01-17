@@ -9,9 +9,6 @@ def build():
         "ipython",
         "numpy",
     ])
-    # install.apt_packages(name=[
-    #     "htop",
-    # ])
 
 
 def gpu_build():
