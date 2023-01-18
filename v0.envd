@@ -1,0 +1,14 @@
+def build():
+    install.python_packages(name=[
+        "ipython",
+        "numpy",
+    ])
+
+
+def gpu_build():
+    build()
+    install.cuda(version="11.6.2")
+    install.python_packages(name=[
+        "torch --extra-index-url https://download.pytorch.org/whl/cu116",
+        "transformers",
+    ])
