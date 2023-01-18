@@ -43,5 +43,5 @@ jobs:
           git config user.name "github-actions-bot"
           git config user.email "github-actions-bot@users.noreply.github.com"
           git add -f trend.png data.csv
-          git commit -m "Update benchmark data and image"
+          git commit -s -m "CI: update benchmark data and image"
           git push -f "${remote_repo}" main:${remote_branch}
