@@ -9,12 +9,40 @@ import seaborn as sns
 
 
 COMMANDS: Dict[str, List[str]] = {
-    "envd-v0-cpu": ["envd", "build", "-f", "v0.envd:build"],
-    "envd-v0-gpu": ["envd", "build", "-f", "v0.envd:gpu_build"],
-    "envd-v1-cpu": ["envd", "build", "-f", "v1.envd:build"],
-    "envd-v1-gpu": ["envd", "build", "-f", "v1.envd:gpu_build"],
     "docker-cpu": ["docker", "buildx", "build", "-f", "Dockerfile", "."],
     "docker-gpu": ["docker", "buildx", "build", "-f", "gpu.Dockerfile", "."],
+    "envd-v0-cpu": [
+        "envd",
+        "build",
+        "-f",
+        "v0.envd:build",
+        "--output",
+        "type=image,name=docker.io/tensorchord/python-cpu-v0",
+    ],
+    "envd-v0-gpu": [
+        "envd",
+        "build",
+        "-f",
+        "v0.envd:gpu_build",
+        "--output",
+        "type=image,name=docker.io/tensorchord/python-gpu-v0",
+    ],
+    "envd-v1-cpu": [
+        "envd",
+        "build",
+        "-f",
+        "v1.envd:build",
+        "--output",
+        "type=image,name=docker.io/tensorchord/python-cpu-v1",
+    ],
+    "envd-v1-gpu": [
+        "envd",
+        "build",
+        "-f",
+        "v1.envd:gpu_build",
+        "--output",
+        "type=image,name=docker.io/tensorchord/python-gpu-v1",
+    ],
 }
 NAMES = list(COMMANDS.keys())
 
@@ -32,24 +60,34 @@ def envd_version() -> str:
 
 
 def record(name: str, cmd: List[str]) -> float:
-    t0 = perf_counter()
-
     # envd needs to bootstrap the buildkitd
     if name.startswith("envd"):
         subprocess.call(["envd", "bootstrap"])
 
+    t0 = perf_counter()
+
     code = subprocess.call(cmd)
     if code != 0:
         print("ERROR: ", cmd)
-        return float("inf")
+        res = float("inf")
+    else:
+        res = perf_counter() - t0
+
+    # clean cache
+    if name.startswith("envd"):
+        subprocess.call(["envd", "prune", "--all"])
+    else:
+        subprocess.call(["docker", "buildx", "prune", "--all"])
 
     # GitHub Action has limited disk space
-    subprocess.run(
-        "docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)",
-        check=True,
-        shell=True,
-    )
-    return perf_counter() - t0
+    # refer to https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+    if os.environ.get("GITHUB_ACTIONS"):
+        subprocess.run(
+            "docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)",
+            check=True,
+            shell=True,
+        )
+    return res
 
 
 def run() -> List[float]:
