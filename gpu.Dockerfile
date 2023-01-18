@@ -78,7 +78,7 @@ RUN update-alternatives --install /usr/bin/python python ${ENVD_PREFIX}/python 1
     update-alternatives --install /usr/bin/pip3 pip3 ${ENVD_PREFIX}/pip3 1
 
 RUN ${ENVD_PREFIX}/pip install ipython numpy
-RUN ${ENVD_PREFIX}/pip install torch transformers --extra-index-url https://download.pytorch.org/whl/cu116
+RUN ${ENVD_PREFIX}/pip install jax[cuda] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 COPY --from=sshd /usr/bin/envd-sshd /var/envd/bin/envd-sshd
 COPY --from=horust / /usr/local/bin/

@@ -1,10 +1,4 @@
-# syntax=v1
-
-
 def build():
-    base(dev=True)
-    install.conda()
-    install.python()
     install.python_packages(name=[
         "ipython",
         "numpy",
@@ -15,6 +9,5 @@ def gpu_build():
     build()
     install.cuda(version="11.6.2")
     install.python_packages(name=[
-        "torch --extra-index-url https://download.pytorch.org/whl/cu116",
-        "transformers",
+        "jax[cuda] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html",
     ])
