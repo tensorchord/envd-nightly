@@ -18,7 +18,9 @@ jobs:
           python-version: "3.10"
 
       - name: Setup dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          python -c "import os; print(os.environ.get('GITHUB_ACTIONS'))"
 
       - name: Docker Setup Buildx
         uses: docker/setup-buildx-action@v2
@@ -27,16 +29,13 @@ jobs:
         env:
           ENVD_ANALYTICS: false
           ENVD_BUILD_OWNER: 1000
-          GITHUB_ACTIONS: true
         run: |
-          env
           python benchmark.py --path ./data.csv
 
       - name: Update to git
         env:
           GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
         run: |
-          env
           git config --global url."https://".insteadOf git://
           git config --global url."https://github.com/".insteadOf git@github.com:
           remote_repo="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
