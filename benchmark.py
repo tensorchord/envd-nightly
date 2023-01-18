@@ -81,7 +81,6 @@ def combine(record: List[float], path: str) -> pd.DataFrame:
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    # res = run()
-    res = [10, 20, 30, 40]
+    res = run()
     data = combine(res, args.path)
     render(data)
