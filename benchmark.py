@@ -49,6 +49,13 @@ NAMES = list(COMMANDS.keys())
 
 parser = argparse.ArgumentParser(description="Process some integers.")
 parser.add_argument("--path", required=True, help="path for the saved data file")
+parser.add_argument(
+    "--github",
+    default=False,
+    action="store_true",
+    help="detect if it's running in the GitHub Actions",
+)
+args = parser.parse_args()
 
 
 def envd_version() -> str:
@@ -81,7 +88,7 @@ def record(name: str, cmd: List[str]) -> float:
 
     # GitHub Action has limited disk space
     # refer to https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
-    if os.environ.get("GITHUB_ACTIONS"):
+    if os.environ.get("GITHUB_ACTIONS") or args.github:
         subprocess.run(
             "docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)",
             check=True,
@@ -118,7 +125,6 @@ def combine(record: List[float], path: str) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    args = parser.parse_args()
     res = run()
     data = combine(res, args.path)
     render(data)
