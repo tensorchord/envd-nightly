@@ -27,12 +27,16 @@ jobs:
         env:
           ENVD_ANALYTICS: false
           ENVD_BUILD_OWNER: 1000
-        run: python benchmark.py --path ./data.csv
+          GITHUB_ACTIONS: true
+        run: |
+          env
+          python benchmark.py --path ./data.csv
 
       - name: Update to git
         env:
           GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
         run: |
+          env
           git config --global url."https://".insteadOf git://
           git config --global url."https://github.com/".insteadOf git@github.com:
           remote_repo="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
