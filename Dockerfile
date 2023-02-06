@@ -59,14 +59,14 @@ RUN set -x && \
     if [ "${CONDA_VERSION}" != "latest" ]; then sha256sum --check --status shasum; fi && \
     mkdir -p /opt/conda && \
     sh miniconda.sh -b -u -p /opt/conda && \
+    rm miniconda.sh shasum && \
     touch ~/.bashrc && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate base" >> ~/.bashrc && \
     echo -e "channels:\n  - defaults" > /opt/conda/.condarc && \
     find /opt/conda/ -follow -type f -name '*.a' -delete && \
     find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
-    /opt/conda/bin/conda clean -afy && \
-    rm miniconda.sh
+    /opt/conda/bin/conda clean -afy
 
 RUN conda create -n envd python=3.9
 
