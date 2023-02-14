@@ -25,7 +25,7 @@ RUN apt-get update && \
         subversion \
         wget \
         curl \
-        openssh-client \
+        make \
         sudo \
         vim \
         zsh \
@@ -33,8 +33,7 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sh -s -- -y && \
-    locale-gen en_US.UTF-8
+RUN locale-gen en_US.UTF-8
 
 ENV PATH /opt/conda/bin:$PATH
 
@@ -82,6 +81,7 @@ RUN ${ENVD_PREFIX}/pip install jax[cuda] -f https://storage.googleapis.com/jax-r
 
 COPY --from=sshd /usr/bin/envd-sshd /var/envd/bin/envd-sshd
 COPY --from=horust / /usr/local/bin/
+COPY --from=starship /usr/local/bin/starship /usr/local/bin/starship
 
 RUN groupadd -g 1000 envd && \
     useradd -p "" -u 1000 -g envd -s /bin/sh -m envd && \
