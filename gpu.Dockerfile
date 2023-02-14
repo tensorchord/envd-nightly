@@ -2,6 +2,7 @@ ARG base=nvidia/cuda:11.6.2-cudnn8-devel-ubuntu20.04
 
 FROM tensorchord/envd-sshd-from-scratch:v0.3.6 as sshd
 FROM tensorchord/horust:v0.2.1 as horust
+FROM tensorchord/starship:v0.0.1 as starship
 
 FROM ${base}
 
